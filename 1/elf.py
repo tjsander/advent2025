@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import re
 
-INPUT = '1/input.txt'
-# INPUT = '1/test_input.txt'
+DAY = 1
+INPUT = str(DAY) + '/input.txt'
+# INPUT = str(DAY) + '/test_input.txt'
 
 def main():
     input_file = open(INPUT, 'r')
