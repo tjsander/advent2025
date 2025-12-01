@@ -21,15 +21,12 @@ def main():
             position = (position - int(line[1:]))
             if position <= 0 and initial_position != 0:
                 count_2 += 1
-            zeroes = int(abs(position)/100)
-            count_2 += zeroes
-            position = abs(position % 100)
-
         else:
             position = (position + int(line[1:]))
-            zeroes = int(position/100)
-            count_2 += zeroes
-            position = position % 100
+
+        zeroes = int(abs(position)/100)
+        count_2 += zeroes
+        position = abs(position % 100)
 
         if position == 0:
             count_1 += 1
