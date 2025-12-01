@@ -14,16 +14,15 @@ def main():
     count_2 = 0
 
     for line in Lines:
-        line = line.strip()
         left = line[0] == 'L'
+        offset = int(line[1:])
         if left:
             initial_position = position
-            position = (position - int(line[1:]))
+            position = (position - offset)
             if position <= 0 and initial_position != 0:
                 count_2 += 1
         else:
-            position = (position + int(line[1:]))
-
+            position = (position + offset)
         zeroes = int(abs(position)/100)
         count_2 += zeroes
         position = abs(position % 100)
