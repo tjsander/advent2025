@@ -46,7 +46,7 @@ def is_invalid(input_string):
 def is_invalid_pt_2(input_string):
     length = len(input_string)
 
-    for i in reversed(range (1, length//2 +1) ):
+    # for i in reversed(range (1, length//2 +1) ):
     for i in range(1, length//2 +1):
         if length % i != 0:
             continue
