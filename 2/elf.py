@@ -47,11 +47,12 @@ def is_invalid_pt_2(input_string):
     length = len(input_string)
 
     for i in reversed(range (1, length//2 +1) ):
+    for i in range(1, length//2 +1):
         if length % i != 0:
             continue
 
         num_array = textwrap.wrap(input_string, i)
-        # print (num_array)
+
         all_equal = all(x == num_array[0] for x in num_array)
         if all_equal:
             return True
