@@ -45,6 +45,11 @@ def main():
 
     # 147952302767971 is too low??
     # 170044670732187 also too low.........
+    # 169978016428836 also wrong
+    # 3031110778619
+    # 169059991684173 WRONG
+    # 169129168648781 WRONG
+
     print(count_1)
     print(count_2)
 
@@ -55,18 +60,14 @@ def part_2(input_string):
 
     # trim the input string
     max_int = (max(map(int, input_string)))
-    while (True):
-        max_idx = input_string.find(str(max_int))
-        if (len(input_string[max_idx:]) >= JOLT_SIZE):
-            reduced_string = input_string[max_idx:]
-            break
-        else:
-            max_int -= 1
-            continue
+
+    max_idx = input_string.find(str(max_int))
+    if (len(input_string[max_idx:]) >= JOLT_SIZE):
+        reduced_string = input_string[max_idx:]
 
     input_string = reduced_string
 
-    while (smallest_int < 9):
+    while (smallest_int < max_int):
         input_string = input_string.replace(str(smallest_int), '')
         if (len(input_string) > JOLT_SIZE):
             reduced_string = input_string
@@ -78,8 +79,14 @@ def part_2(input_string):
 
     while (len(reduced_string) > JOLT_SIZE):
         reduced_string = remove_at(delete_index, reduced_string)
-        if (len(reduced_string) > JOLT_SIZE and delete_index < JOLT_SIZE
-               and int(reduced_string[delete_index]) < int(reduced_string[delete_index +1])):
+
+        #DELETE ANY NUMBERS THAT ARE LESS THAN THE NEXT NUMBER UNTIL YOU REACH SMALLEST_INT
+        # while (reduced_string[delete_index] != str(smallest_int) and
+        #        int(reduced_string[delete_index]) < int(reduced_string[delete_index +1])):
+        #     reduced_string = remove_at(delete_index, reduced_string)
+        while (len(reduced_string) > JOLT_SIZE and delete_index < JOLT_SIZE
+            and int(reduced_string[delete_index]) < int(reduced_string[delete_index +1])
+            and reduced_string[delete_index] != str(smallest_int)):
             reduced_string = remove_at(delete_index, reduced_string)
         delete_index = reduced_string.find(str(smallest_int))
 
