@@ -2,7 +2,7 @@
 
 DAY = 3
 INPUT = str(DAY) + '/input.txt'
-INPUT = str(DAY) + '/test_input.txt'
+# INPUT = str(DAY) + '/test_input.txt'
 
 def main():
     input_file = open(INPUT, 'r')
@@ -33,9 +33,10 @@ def main():
             right_max = 10 * max_int + right_max
 
         max_max = max(left_max, right_max)
-        # print(max_max)
+        print(max_max)
         count_1 += max(left_max, right_max)
 
+    print("Part 2")
 
     for line in Lines:
         max_jolt = part_2(line)
@@ -43,33 +44,47 @@ def main():
 
 
     # 147952302767971 is too low??
+    # 170044670732187 also too low.........
     print(count_1)
     print(count_2)
 
 def part_2(input_string):
-    SIZE_LIMIT = 2
+    JOLT_SIZE = 12
     smallest_int = (min(map(int, input_string)))
-    smallest_string = input_string
+    reduced_string = input_string
 
-    while (smallest_int <= 8):
+    # trim the input string
+    max_int = (max(map(int, input_string)))
+    while (True):
+        max_idx = input_string.find(str(max_int))
+        if (len(input_string[max_idx:]) >= JOLT_SIZE):
+            reduced_string = input_string[max_idx:]
+            break
+        else:
+            max_int -= 1
+            continue
+
+    input_string = reduced_string
+
+    while (smallest_int < 9):
         input_string = input_string.replace(str(smallest_int), '')
-        if (len(input_string) > SIZE_LIMIT):
-            smallest_string = input_string
+        if (len(input_string) > JOLT_SIZE):
+            reduced_string = input_string
             smallest_int += 1
         else:
             break
 
-    delete_index = smallest_string.find(str(smallest_int))
+    delete_index = reduced_string.find(str(smallest_int))
 
-    while (len(smallest_string) > SIZE_LIMIT):
-        smallest_string = remove_at(delete_index, smallest_string)
-        if (len(smallest_string) > SIZE_LIMIT and delete_index < SIZE_LIMIT
-               and int(smallest_string[delete_index]) < int(smallest_string[delete_index +1])):
-            smallest_string = remove_at(delete_index, smallest_string)
-        delete_index = smallest_string.find(str(smallest_int))
+    while (len(reduced_string) > JOLT_SIZE):
+        reduced_string = remove_at(delete_index, reduced_string)
+        if (len(reduced_string) > JOLT_SIZE and delete_index < JOLT_SIZE
+               and int(reduced_string[delete_index]) < int(reduced_string[delete_index +1])):
+            reduced_string = remove_at(delete_index, reduced_string)
+        delete_index = reduced_string.find(str(smallest_int))
 
-    print (smallest_string)
-    return int(smallest_string)
+    print (reduced_string)
+    return int(reduced_string)
 
 def remove_at(i: int, s: str) -> str:
     return s[:i] + s[i+1:]
