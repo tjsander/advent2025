@@ -22,16 +22,41 @@ def main():
         # print(horizontal)
         y_array.append(horizontal)
 
-    for y in range(0,len(y_array)):
-        for x in range(0,len(y_array[0])):
-            if check_roll(y_array, y, x) == 1:
-                count_1 += check_access(y_array, y, x)
+
+    count_1 = check_array_1(y_array)
+    count_2 = check_array_2(y_array)
 
     # print (y_array)
     print("Part 1")
     print(count_1)
     print("Part 2")
     print(count_2)
+
+
+def check_array_1(y_array):
+    # check_array(array)
+    count = 0
+    for y in range(0,len(y_array)):
+        for x in range(0,len(y_array[0])):
+            if check_roll(y_array, y, x) == 1:
+                if (check_access(y_array, y, x) == 1):
+                    count += 1
+    return count
+
+def check_array_2(y_array):
+    # check_array(array)
+    count = 0
+    for y in range(0,len(y_array)):
+        for x in range(0,len(y_array[0])):
+            if check_roll(y_array, y, x) == 1:
+                if (check_access(y_array, y, x) == 1):
+                    count += 1
+                    y_array[y][x] = 'x'
+    if count == 0:
+        return 0
+    else:
+        final_count = count + check_array_2(y_array)
+        return final_count
 
 
 def check_roll(array, y, x):
@@ -54,9 +79,6 @@ def check_access(array, y, x):
     for ry in range_y:
         for rx in range_x:
             count += check_roll(array, ry, rx)
-
-    # print (range_y)
-    # print (range_x)
 
     if count < 5:
         print("Access Granted at ", y, x)
