@@ -34,29 +34,35 @@ def main():
 
 
 def check_array_1(y_array):
-    # check_array(array)
-    count = 0
-    for y in range(0,len(y_array)):
-        for x in range(0,len(y_array[0])):
-            if check_roll(y_array, y, x) == 1:
-                if (check_access(y_array, y, x) == 1):
-                    count += 1
-    return count
+    return process_array(y_array, mark=False)
 
 def check_array_2(y_array):
-    # check_array(array)
+    # Iteratively mark and count until no more matches (avoid recursion)
+    total = 0
+    while True:
+        c = process_array(y_array, mark=True)
+        if c == 0:
+            break
+        total += c
+    return total
+
+
+def process_array(y_array, mark=False):
+    """Scan the array for roll characters and, if `mark` is True, mark
+    matched cells with 'x'. Returns the number of matches found in one pass.
+    """
     count = 0
-    for y in range(0,len(y_array)):
-        for x in range(0,len(y_array[0])):
+    height = len(y_array)
+    width = len(y_array[0]) if height else 0
+
+    for y in range(height):
+        for x in range(width):
             if check_roll(y_array, y, x) == 1:
-                if (check_access(y_array, y, x) == 1):
+                if check_access(y_array, y, x) == 1:
                     count += 1
-                    y_array[y][x] = 'x'
-    if count == 0:
-        return 0
-    else:
-        final_count = count + check_array_2(y_array)
-        return final_count
+                    if mark:
+                        y_array[y][x] = 'x'
+    return count
 
 
 def check_roll(array, y, x):
@@ -81,7 +87,7 @@ def check_access(array, y, x):
             count += check_roll(array, ry, rx)
 
     if count < 5:
-        print("Access Granted at ", y, x)
+        # print("Access Granted at ", y, x)
         return 1
     return 0
 
