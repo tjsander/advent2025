@@ -33,8 +33,50 @@ def main(test=False, no_connections=10):
     connection_lengths.sort(reverse=True)
     print(connection_lengths[0]*connection_lengths[1]*connection_lengths[2])
 
-    # print("Part 2")
-    # print(count_2)
+    print("Part 2")
+    count_2 = make_connections_forever(new_distances, Lines)
+    print(count_2)
+
+def make_connections_forever(node_distances, nodes):
+    connections = []
+    count = 0
+
+    i = 0
+    while i < len(node_distances):
+
+        node_a = node_distances[i][1]
+        node_b = node_distances[i][2]
+
+        if len(connections) == 0:
+            connections.append([node_a, node_b])
+            i += 1
+            continue
+        merged = False
+        for connection in connections:
+            if node_a in connection and node_b in connection:
+                merged = True
+                break
+            if node_a in connection:
+                if node_b not in connection:
+                    connection.append(node_b)
+                    merged = True
+                    break
+            if node_b in connection:
+                if node_a not in connection:
+                    connection.append(node_a)
+                    merged = True
+                    break
+        if not merged:
+            connections.append([node_a, node_b])
+        i += 1
+
+        finished = False
+        while not finished:
+            connections, finished = merge_connections(connections)
+        if (len(connections[0])== len(nodes)):
+            return node_a[0] * node_b[0]
+        continue
+    return -1
 
 def make_connections(node_distances, size_limit):
     connections = []
