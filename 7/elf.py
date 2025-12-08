@@ -3,53 +3,57 @@ import re
 
 DAY = 7
 
-def main(test=False, part2=False):
+def main(test=False):
     input_1 = str(DAY) + '/test_input.txt'
     if not test:
         input_1 = str(DAY) + '/input.txt'
     input_file = open(input_1, 'r')
     Lines = list([line[:-1] for line in input_file])
     count_1   = 0
-    count_2   = 1
 
-    # rows = []
     beams = []
     beams.append(Lines[0].find('S') )
 
     for line in Lines:
         if line.find('^') ==  -1:
             continue
-        # rows.append(" ".join(line.split()).split(" "))
+
         splitters = [m.start() for m in re.finditer('\^', line)]
         new_beams = []
         for beam in beams:
             if beam in splitters:
                 count_1 += 1
-                count_2 += 1
                 new_beams.append(beam -1)
                 new_beams.append(beam +1)
             else:
                 new_beams.append(beam)
-        if not part2:
-            beams = list(set(new_beams))
-        else:
-            beams = new_beams
-    # count_2 = len(beams)
+        beams = list(set(new_beams))
 
-    if not part2:
-        print("Part 1")
-        print(count_1)
+    print("Part 1")
+    print(count_1)
 
-    if test:
-        for line in Lines:
-            print (line)
+    beams_pt2 = []
+    for i in range(len(Lines[0])):
+        beams_pt2.append(0)
+    beams_pt2[Lines[0].find('S')] += 1
 
-    if part2:
-        print("Part 2")
-        print(count_2)
+    for line in Lines:
+        if line.find('^') ==  -1:
+            continue
+
+        splitters = [m.start() for m in re.finditer('\^', line)]
+        new_beams = []
+        for i in range(0,len(beams_pt2)):
+            if i in splitters:
+                beams_pt2[i-1] += beams_pt2[i]
+                beams_pt2[i+1] += beams_pt2[i]
+                beams_pt2[i] = 0
+        # beams = list(set(new_beams))
+
+
+    print("Part 2")
+    print(sum(beams_pt2))
 
 if __name__ == '__main__':
     main(test=True)
     main()
-    main(test=True, part2=True)
-    # main(part2=True)
