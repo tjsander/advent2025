@@ -11,6 +11,7 @@ def main(test=False):
     Lines = list([line.strip().split(" ") for line in input_file])
     count_1   = 0
     count_2   = 0
+    count_2_2 = 0
 
     assert (string_to_int("[.##.]") == 6)
     assert (button_string_to_int("(3)"  , 4) == 1)
@@ -36,22 +37,75 @@ def main(test=False):
         count_1 += output
     print("Part 1 = " + str(count_1))
 
-    print("Part 2")
+    # if test:
+    #     print("Part 2 Try 1")
+    #     for line in Lines:
+    #         if test:
+    #             print(line)
+    #         machine = string_to_int_pt2(line[-1])
+    #         buttons = []
+    #         spaces  = len(line[0]) - 2
+    #         for i in range (1, len(line)-1):
+    #             buttons.append(button_string_to_int(line[i], spaces))
+
+    #         output = press_buttons_pt2(machine, buttons, line[-1][1:-1].split(","))
+    #         if test:
+    #             print("Buttons pressed = " + str(output))
+    #         count_2 += output
+
+    #     print("Part 2 = " + str(count_2))
+
+    print("Part 2 Try 2")
+    # arrange the buttons in descending order
+    # press largest button util you overflow a register
+    # move to the next smaller button
     for line in Lines:
         if test:
             print(line)
-        machine = string_to_int_pt2(line[-1])
-        buttons = []
+        # machine = string_to_int_pt2(line[-1])
+        machine_arr = [int(i) for i in line[-1][1:-1].split(",")]
         spaces  = len(line[0]) - 2
+
+        # Sort by numerical value first
+        sort_buttons = []
         for i in range (1, len(line)-1):
-            buttons.append(button_string_to_int(line[i], spaces))
+            button_int_array = [int(x) for x in line[i][1:-1].split(",")]
+            sort_buttons.append((button_string_to_int(line[i], spaces), line[i], button_int_array))
+        sort_buttons.sort(reverse=True)
+        sort_buttons.sort(key=lambda x: len(x[1]), reverse=True)
 
-        output = press_buttons_pt2(machine, buttons, line[-1][1:-1].split(","))
+        count = 0
+        output_arr = [0] * len(machine_arr)
+        for button in sort_buttons:
+            while (press_button_pt2_try2(machine_arr, button[0], output_arr)):
+                count += 1
+                if test:
+                    print("Button " + str(button) + " pressed = " + str(count))
         if test:
-            print("Buttons pressed = " + str(output))
-        count_2 += output
+            print("Total buttons pressed = " + str(count))
+            print(str(machine_arr) + " ==" + str(output_arr))
+        if (machine_arr == output_arr):
+            count_2_2 += count
+        else:
+            print("Error: final machine state does not match")
 
-    print("Part 2 = " + str(count_2))
+    print("Part 2 Try 2 = " + str(count_2_2))
+
+def press_button_pt2_try2(machine_arr, button, input_arr):
+    format_string = '{0:0' + str(len(machine_arr)) + 'b}'
+    binary_str = format_string.format(button)
+    assert (len(binary_str) == len(machine_arr))
+
+    for i in range(len(binary_str)):
+        if binary_str[i] == "1":
+            if (input_arr[i] + 1 <= machine_arr[i]):
+                continue
+            else:
+                return False
+    for i in range(len(binary_str)):
+        if binary_str[i] == "1":
+            input_arr[i] += 1
+    return True
 
 def press_buttons(machine, buttons):
     if machine == 0:
@@ -105,6 +159,7 @@ def press_buttons_pt2(machine, buttons, machine_string):
     machine_max = max(machine_arr)
 
     new_buttons = []
+    buttons.sort(reverse=True)
 
     for button in buttons:
         max_button = get_button_max(button, machine_arr)
@@ -112,8 +167,6 @@ def press_buttons_pt2(machine, buttons, machine_string):
             new_buttons.append(button)
 
     for i in range (machine_max, sum(buttons)+1):
-        for button in buttons:
-            mult = machine_max // button
         combos = combinations(new_buttons,i)
 
         print("Trying " + str(i) + " buttons")
@@ -163,3 +216,6 @@ def check_strings_pt2(machine_string, combo):
 if __name__ == '__main__':
     main(test=True)
     main()
+
+
+# 19080 too low
