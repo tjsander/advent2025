@@ -76,11 +76,37 @@ def main(test=False):
 
         count = 0
         output_arr = [0] * len(machine_arr)
-        for button in sort_buttons:
-            while (press_button_pt2_try2(machine_arr, button[0], output_arr)):
-                count += 1
-                if test:
-                    print("Button " + str(button) + " pressed = " + str(count))
+        # for button in sort_buttons:
+        #     while (press_button_pt2_try2(machine_arr, button[0], output_arr)):
+        #         count += 1
+        #         if test:
+        #             print("Button " + str(button) + " pressed = " + str(count))
+
+        # New experiment
+        # Sort the desired output indexes and try buttons in that order
+        new_machine_arr = []
+        for i in range(len(machine_arr)):
+            new_machine_arr.append ([machine_arr[i], i, machine_arr[i]])
+        machine_arr_sorted = new_machine_arr.copy()
+        machine_arr_sorted.sort()
+
+        for _ in range(spaces):
+            index = machine_arr_sorted[0][1]
+            buttons_at_index = []
+            for buttonx in sort_buttons:
+                if index in buttonx[2]:
+                    buttons_at_index.append(buttonx)
+            for button in buttons_at_index:
+                while (press_button_pt2_try2(machine_arr, button[0], output_arr)):
+                    count += 1
+                    for i in button[2]:
+                        for machine in machine_arr_sorted:
+                            if machine[1] == i:
+                                machine[0] -= 1 # reduce the desired count
+                    if test:
+                        print("Button " + str(button) + " pressed = " + str(count))
+            machine_arr_sorted.pop(0)
+            machine_arr_sorted.sort()
         if test:
             print("Total buttons pressed = " + str(count))
             print(str(machine_arr) + " ==" + str(output_arr))
