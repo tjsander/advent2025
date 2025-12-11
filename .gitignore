@@ -1,0 +1,2 @@
+# Ignore every file named input.txt anywhere in the repo
+**/input.txt
