@@ -4,56 +4,15 @@ from math import prod
 
 DAY = 9
 
-class Grid:
-    def __init__(self, points):
-        self.points = points
-        self.width = 1
-        self.height = 1
-        self.grid = []
-        self.y_dict = None
-        self.x_dict = None
-        self.build_simple_grid()
-
-    def is_red_or_green(point):
-        return False
-
-    def add_point(self, point):
-        return -1
-
-    def build_simple_grid(self):
-        x_set = set()
-        y_set = set()
-        for point in self.points:
-            x_set.add(point[0])
-            y_set.add(point[1])
-
-
-        self.x_dict = {v: k for k, v in enumerate(sorted(x_set))}
-        self.y_dict = {v: k for k, v in enumerate(sorted(y_set))}
-
-        self.width  = len(self.x_dict)
-        self.height = len(self.y_dict)
-
-        for y in range(self.height):
-            row = []
-            for x in range(self.width):
-                row.append(".")
-            self.grid.append(row)
-
-        return True
-
-    def __str__(self):
-        string = ""
-        for row in self.grid:
-            string += "".join(row) + "\n"
-        return string
-
-class Point:
-    def __init__(self, x, y, color="."):
-        self.x = x
-        self.y = y
-        self.color = color
-
+class Area:
+    def __init__(self, point_a, point_b):
+        self.point_a = point_a
+        self.point_b = point_b
+        self.left  = min(point_a[0], point_b[0])
+        self.right = max(point_a[0], point_b[0])
+        self.top   = min(point_a[1], point_b[1])
+        self.bottom= max(point_a[1], point_b[1])
+        self.area = (abs(point_a[0]-point_b[0])+1) * (abs(point_a[1]-point_b[1])+1)
 
 def main(test=False):
     input_1 = str(DAY) + '/test_input.txt'
@@ -68,6 +27,9 @@ def main(test=False):
     biggest_area = 0
 
     area_arr = []
+    Areas = []
+    Edges = []
+
     for point1 in Points:
         for point2 in Points:
 
@@ -77,12 +39,17 @@ def main(test=False):
                 print (area)
 
             area_arr.append((area, point1, point2))
+            Areas.append(Area(point1, point2))
 
             if area > biggest_area:
 
                 biggest_area = area
                 biggest_1 = point1
                 biggest_2 = point2
+
+    for x in range (0,len(Points)-1):
+        Edges.append(Area(Points[x], Points[x+1]))
+    Edges.append(Area(Points[0], Points[-1]))
 
     area_arr = sorted(area_arr, key=lambda x: x[0], reverse=True)
 
@@ -92,8 +59,36 @@ def main(test=False):
     print(biggest_2)
 
     print("Part 2")
-    grid = Grid(Points)
-    print(str(grid))
+
+    Areas.sort(key=lambda x: x.area, reverse=True)
+    for Area1 in Areas:
+        collided = False
+        for Edge in Edges:
+            if Area1 == Edge:
+                continue
+            if checkAABBCollision(Area1, Edge):
+                if test:
+                    print("Collision:")
+                    print(" Area: " + str(Area1.point_a) + " to " + str(Area1.point_b))
+                    print(" Edge: " + str(Edge.point_a) + " to " + str(Edge.point_b))
+                collided = True
+                break
+        if collided:
+            continue
+        print("No collisions for Area: " + str(Area1.point_a) + " to " + str(Area1.point_b))
+        print("Area==: " + str(Area1.area))
+        break
+
+
+def checkAABBCollision(A, B) -> Area:
+    AisToTheRightofB = A.left >= B.right
+    AisToTheLeftofB  = A.right <= B.left
+    AisAboveB        = A.bottom <= B.top
+    AisBelowB        = A.top >= B.bottom
+    return not (AisToTheRightofB
+      or AisToTheLeftofB
+      or AisAboveB
+      or AisBelowB)
 
 def find_area(point_a, point_b):
     area = (abs(point_a[0]-point_b[0])+1,abs(point_a[1]-point_b[1])+1)
@@ -101,4 +96,4 @@ def find_area(point_a, point_b):
 
 if __name__ == '__main__':
     main(test=True)
-    # main()
+    main()
